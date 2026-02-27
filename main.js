@@ -39,9 +39,8 @@ document.querySelector('#app').innerHTML = `
 
       <div class="dress-code-section" id="dressCodeSection">
         <h3 class="dress-code-title">Dress Code</h3>
-        <p class="dress-code-desc">
-          Hãy chọn 1 nhân vật hoạt hình để hóa trang<br/>
-          & giải thích vì sao bạn chọn nhân vật đó nhé! ✨
+        <p class="dress-code-desc" id="dressCodeDesc">
+          <!-- Will be filled by JS -->
         </p>
       </div>
     </div>
@@ -53,10 +52,74 @@ const guestInput = document.getElementById('guestInput');
 const guestInputSection = document.getElementById('guestInputSection');
 const preTitle = document.getElementById('preTitle');
 const dressCodeSection = document.getElementById('dressCodeSection');
+const dressCodeDesc = document.getElementById('dressCodeDesc');
+
+const defaultMovies = [
+  "Toy story", "Minion", "Inside out", "Aladdin", "Shrek",
+  "Doremon", "Conan", "How to train your dragon", "Zootopia",
+  "Ratatouille", "Super Mario", "Hotel Transylvania", "Up",
+  "Lilo & Stitch", "Tarzan", "Boboiboy"
+];
+
+function getAvailableMovies() {
+  const stored = localStorage.getItem('availableMovies');
+  if (stored) return JSON.parse(stored);
+  localStorage.setItem('availableMovies', JSON.stringify(defaultMovies));
+  return defaultMovies;
+}
+
+function assignMovieToGuest(guestName) {
+  const lowerName = guestName.toLowerCase();
+
+  // Check if we already have a record for this guest
+  const guestRecords = JSON.parse(localStorage.getItem('guestRecords') || '{}');
+  if (guestRecords[lowerName]) {
+    return guestRecords[lowerName];
+  }
+
+  // Pick random from available
+  let available = getAvailableMovies();
+
+  // If we run out of movies, reset the pool
+  if (available.length === 0) {
+    available = [...defaultMovies];
+  }
+
+  const randomIndex = Math.floor(Math.random() * available.length);
+  const pickedMovie = available[randomIndex];
+
+  // Remove from available and save
+  available.splice(randomIndex, 1);
+  localStorage.setItem('availableMovies', JSON.stringify(available));
+
+  // Save to guest record
+  guestRecords[lowerName] = pickedMovie;
+  localStorage.setItem('guestRecords', JSON.stringify(guestRecords));
+
+  return pickedMovie;
+}
+
+function checkAndShowGuestState() {
+  // If a guest was previously logged in on this browser, 
+  // we could automatically restore state here.
+  // However, the requirement is to handle this after they input their name.
+}
 
 guestInput.addEventListener('keypress', function (e) {
   if (e.key === 'Enter' && this.value.trim() !== '') {
-    const name = this.value.trim();
+    const rawName = this.value.trim();
+
+    // Secret Reset code
+    if (rawName === '123123asd') {
+      localStorage.removeItem('availableMovies');
+      localStorage.removeItem('guestRecords');
+      alert('Đã reset toàn bộ dữ liệu Random Movie!');
+      this.value = '';
+      return;
+    }
+
+    // Process movie assignment
+    const assignedMovie = assignMovieToGuest(rawName);
 
     // 1. Smoothly collapse and fade out the input section
     guestInputSection.classList.add('hidden');
@@ -68,11 +131,14 @@ guestInput.addEventListener('keypress', function (e) {
 
     setTimeout(() => {
       // Update the text for preTitle
-      preTitle.innerHTML = `xin mời <span style="color: var(--color-pink); font-family: var(--font-script); font-size: 2.2rem; text-transform: none; margin: 0 5px;">${name}</span> đến với sinh nhật của`;
+      preTitle.innerHTML = `xin mời <span style="color: var(--color-pink); font-family: var(--font-script); font-size: 2.2rem; text-transform: none; margin: 0 5px;">${rawName}</span> đến với sinh nhật của`;
 
       // Bring preTitle back smoothly
       preTitle.style.opacity = '1';
       preTitle.style.transform = 'translateY(0)';
+
+      // Set the dynamic content for dress code
+      dressCodeDesc.innerHTML = `Hãy chọn 1 nhân vật trong phim <strong style="color: var(--color-pink); font-family: var(--font-heading); font-size: 1.1rem; letter-spacing: 1px;">🎈 ${assignedMovie.toUpperCase()} 🎈</strong> để hóa trang.<br><span style="font-size: 0.85rem; font-style: italic; opacity: 0.8; display: block; margin-top: 5px;">Mặc sai không được mời dở ráng chịu!</span>`;
 
       // 3. Smoothly expand and fade in Dress Code
       dressCodeSection.classList.add('visible');

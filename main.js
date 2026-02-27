@@ -29,13 +29,47 @@ document.querySelector('#app').innerHTML = `
       </div>
       
       <div class="guest-input-section">
-        <input type="text" class="guest-name-input" placeholder="Bạn tên là..." />
+        <input type="text" class="guest-name-input" id="guestInput" placeholder="Bạn tên là..." />
+        <span class="guest-name-final" id="guestFinal"></span>
       </div>
       
       <div class="location-section">
         <p class="venue">Panda BBQ</p>
         <p class="address">453 Lê Trọng Tấn, Sơn Kỳ, Tân Phú</p>
       </div>
+
+      <div class="dress-code-section">
+        <h3 class="dress-code-title">Dress Code</h3>
+        <p class="dress-code-desc">
+          Hãy chọn 1 nhân vật hoạt hình để hóa trang<br/>
+          & giải thích vì sao bạn chọn nhân vật đó nhé! ✨
+        </p>
+      </div>
     </div>
   </div>
 `
+
+// --- Handle Guest Name Input Interaction ---
+const guestInput = document.getElementById('guestInput');
+const guestFinal = document.getElementById('guestFinal');
+
+guestInput.addEventListener('keypress', function (e) {
+  if (e.key === 'Enter' && this.value.trim() !== '') {
+    const name = this.value.trim();
+
+    // Hide input with a fade-out effect and show text
+    this.classList.add('hidden');
+
+    setTimeout(() => {
+      this.style.display = 'none';
+
+      // Prepare the final text
+      guestFinal.textContent = `Dành riêng cho ${name}`;
+      guestFinal.style.display = 'block';
+
+      // Trigger reflow to start opacity transition
+      void guestFinal.offsetWidth;
+      guestFinal.classList.add('visible');
+    }, 300); // 300ms matches the transition duration usually set in CSS
+  }
+});

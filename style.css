@@ -121,7 +121,8 @@ body {
 /* Names */
 .names-section {
     margin-bottom: 2.5rem;
-    width: 135%;
+    width: 100%;
+    max-width: 100%;
 }
 
 .main-title {
@@ -442,7 +443,7 @@ body {
 
 @media (max-width: 600px) {
     .card-content {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
     }
 
     .pre-title {
@@ -451,8 +452,9 @@ body {
     }
 
     .main-title {
-        font-size: 4rem;
+        font-size: 3.5rem;
         margin-bottom: 0.5rem;
+        line-height: 1.2;
     }
 
     .month,
@@ -487,11 +489,19 @@ body {
     .venue {
         font-size: 1.1rem !important;
     }
+
+    .dress-code-title {
+        font-size: 1.1rem;
+    }
+
+    .dress-code-desc {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 400px) {
     .main-title {
-        font-size: 3.2rem;
+        font-size: 2.8rem;
     }
 
     .date-row::before,

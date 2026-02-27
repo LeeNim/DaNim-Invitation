@@ -130,8 +130,8 @@ guestInput.addEventListener('keypress', function (e) {
     preTitle.style.transform = 'translateY(-10px)';
 
     setTimeout(() => {
-      // Update the text for preTitle
-      preTitle.innerHTML = `xin mời <span style="color: var(--color-pink); font-family: var(--font-script); font-size: 2.2rem; text-transform: none; margin: 0 5px;">${rawName}</span> đến với sinh nhật của`;
+      // Update the text for preTitle with block layout for mobile responsiveness
+      preTitle.innerHTML = `xin mời <span style="display: block; color: var(--color-pink); font-family: var(--font-script); font-size: 2.8rem; text-transform: none; margin: 5px 0; line-height: 1.2;">${rawName}</span> đến với sinh nhật của`;
 
       // Bring preTitle back smoothly
       preTitle.style.opacity = '1';

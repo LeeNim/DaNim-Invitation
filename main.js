@@ -28,6 +28,10 @@ document.querySelector('#app').innerHTML = `
         <div class="year">2026</div>
       </div>
       
+      <div class="guest-input-section">
+        <input type="text" class="guest-name-input" placeholder="Bạn tên là..." />
+      </div>
+      
       <div class="location-section">
         <p class="venue">Panda BBQ</p>
         <p class="address">453 Lê Trọng Tấn, Sơn Kỳ, Tân Phú</p>

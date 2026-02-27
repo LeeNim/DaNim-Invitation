@@ -23,7 +23,7 @@ document.querySelector('#app').innerHTML = `
         <div class="date-row">
           <div class="day-name">CHỦ NHẬT</div>
           <div class="day-number">28</div>
-          <div class="time">LÚC 7 GIỜ TỐI</div>
+          <div class="time">LÚC 6 GIỜ TỐI</div>
         </div>
         <div class="year">2026</div>
       </div>

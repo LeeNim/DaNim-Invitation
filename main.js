@@ -62,21 +62,13 @@ const defaultMovies = [
 ];
 
 function getAvailableMovies() {
-  const stored = localStorage.getItem('availableMovies');
+  const stored = sessionStorage.getItem('availableMovies');
   if (stored) return JSON.parse(stored);
-  localStorage.setItem('availableMovies', JSON.stringify(defaultMovies));
+  sessionStorage.setItem('availableMovies', JSON.stringify(defaultMovies));
   return defaultMovies;
 }
 
-function assignMovieToGuest(guestName) {
-  const lowerName = guestName.toLowerCase();
-
-  // Check if we already have a record for this guest
-  const guestRecords = JSON.parse(localStorage.getItem('guestRecords') || '{}');
-  if (guestRecords[lowerName]) {
-    return guestRecords[lowerName];
-  }
-
+function assignMovieToGuest() {
   // Pick random from available
   let available = getAvailableMovies();
 
@@ -88,22 +80,14 @@ function assignMovieToGuest(guestName) {
   const randomIndex = Math.floor(Math.random() * available.length);
   const pickedMovie = available[randomIndex];
 
-  // Remove from available and save
+  // Remove from available and save to session
   available.splice(randomIndex, 1);
-  localStorage.setItem('availableMovies', JSON.stringify(available));
-
-  // Save to guest record
-  guestRecords[lowerName] = pickedMovie;
-  localStorage.setItem('guestRecords', JSON.stringify(guestRecords));
+  sessionStorage.setItem('availableMovies', JSON.stringify(available));
 
   return pickedMovie;
 }
 
-function checkAndShowGuestState() {
-  // If a guest was previously logged in on this browser, 
-  // we could automatically restore state here.
-  // However, the requirement is to handle this after they input their name.
-}
+
 
 guestInput.addEventListener('keypress', function (e) {
   if (e.key === 'Enter' && this.value.trim() !== '') {
@@ -111,15 +95,14 @@ guestInput.addEventListener('keypress', function (e) {
 
     // Secret Reset code
     if (rawName === '123123asd') {
-      localStorage.removeItem('availableMovies');
-      localStorage.removeItem('guestRecords');
-      alert('Đã reset toàn bộ dữ liệu Random Movie!');
+      sessionStorage.removeItem('availableMovies');
+      alert('Đã reset toàn bộ danh sách Phim!');
       this.value = '';
       return;
     }
 
     // Process movie assignment
-    const assignedMovie = assignMovieToGuest(rawName);
+    const assignedMovie = assignMovieToGuest();
 
     // 1. Smoothly collapse and fade out the input section
     guestInputSection.classList.add('hidden');
@@ -138,7 +121,7 @@ guestInput.addEventListener('keypress', function (e) {
       preTitle.style.transform = 'translateY(0)';
 
       // Set the dynamic content for dress code
-      dressCodeDesc.innerHTML = `Hãy chọn 1 nhân vật trong phim <strong style="color: var(--color-pink); font-family: var(--font-heading); font-size: 1.1rem; letter-spacing: 1px;">🎈 ${assignedMovie.toUpperCase()} 🎈</strong> để hóa trang.<br><span style="font-size: 0.85rem; font-style: italic; opacity: 0.8; display: block; margin-top: 5px;">Mặc sai không được mời dở ráng chịu!</span>`;
+      dressCodeDesc.innerHTML = `Hãy chọn 1 nhân vật trong phim <strong style="color: var(--color-pink); font-family: var(--font-heading); font-size: 1.1rem; letter-spacing: 1px;">🎈 ${assignedMovie.toUpperCase()} 🎈</strong> để hóa trang.<br><span style="font-size: 0.85rem; font-style: italic; opacity: 0.8; display: block; margin-top: 5px;">Mặc sai thì không được mời ráng chịu nha!</span>`;
 
       // 3. Smoothly expand and fade in Dress Code
       dressCodeSection.classList.add('visible');

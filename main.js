@@ -21,7 +21,7 @@ document.querySelector('#app').innerHTML = `
       <div class="date-section">
         <div class="month">THÁNG 2</div>
         <div class="date-row">
-          <div class="day-name">CHỦ NHẬT</div>
+          <div class="day-name">THỨ BẢY</div>
           <div class="day-number">28</div>
           <div class="time">LÚC 6 GIỜ TỐI</div>
         </div>

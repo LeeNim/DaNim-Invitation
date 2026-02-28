@@ -62,13 +62,21 @@ const defaultMovies = [
 ];
 
 function getAvailableMovies() {
-  const stored = sessionStorage.getItem('availableMovies');
+  const stored = localStorage.getItem('availableMovies');
   if (stored) return JSON.parse(stored);
-  sessionStorage.setItem('availableMovies', JSON.stringify(defaultMovies));
+  localStorage.setItem('availableMovies', JSON.stringify(defaultMovies));
   return defaultMovies;
 }
 
-function assignMovieToGuest() {
+function assignMovieToGuest(guestName) {
+  const lowerName = guestName.toLowerCase();
+
+  // Check if we already have a record for this guest
+  const guestRecords = JSON.parse(localStorage.getItem('guestRecords') || '{}');
+  if (guestRecords[lowerName]) {
+    return guestRecords[lowerName];
+  }
+
   // Pick random from available
   let available = getAvailableMovies();
 
@@ -80,9 +88,13 @@ function assignMovieToGuest() {
   const randomIndex = Math.floor(Math.random() * available.length);
   const pickedMovie = available[randomIndex];
 
-  // Remove from available and save to session
+  // Remove from available and save to local storage
   available.splice(randomIndex, 1);
-  sessionStorage.setItem('availableMovies', JSON.stringify(available));
+  localStorage.setItem('availableMovies', JSON.stringify(available));
+
+  // Save to guest record
+  guestRecords[lowerName] = pickedMovie;
+  localStorage.setItem('guestRecords', JSON.stringify(guestRecords));
 
   return pickedMovie;
 }
@@ -95,14 +107,15 @@ guestInput.addEventListener('keypress', function (e) {
 
     // Secret Reset code
     if (rawName === '123123asd') {
-      sessionStorage.removeItem('availableMovies');
-      alert('Đã reset toàn bộ danh sách Phim!');
+      localStorage.removeItem('availableMovies');
+      localStorage.removeItem('guestRecords');
+      alert('Đã reset toàn bộ danh sách Phim & Tên khách!');
       this.value = '';
       return;
     }
 
     // Process movie assignment
-    const assignedMovie = assignMovieToGuest();
+    const assignedMovie = assignMovieToGuest(rawName);
 
     // 1. Smoothly collapse and fade out the input section
     guestInputSection.classList.add('hidden');
